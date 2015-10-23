@@ -1,4 +1,5 @@
 require "rails"
+require "refiner/query"
 require "refiner/version"
 
 module Refiner
