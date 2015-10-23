@@ -8,7 +8,7 @@ module Refiner
     end
 
     def segment_refiner_query_by(*detectors)
-      refiner_query.slice(detectors) rescue {}
+      refiner_query.slice(*detectors) rescue {}
     end
 
     def refiner_query
