@@ -1,4 +1,5 @@
 require "rails"
+require "refiner/query"
 require "refiner/version"
 
 module Refiner
@@ -16,11 +17,11 @@ module Refiner
     end
 
     def refiner_active? scope, slug
-      (query[scope.to_s] || "").split(/,/).include?(slug.to_s) ? 'active' : nil
+      (refiner_query[scope.to_s] || "").split(/,/).include?(slug.to_s) ? 'active' : nil
     end
 
     def refiner_value action, scope, slug
-      REFINER_VALUE[refiner_value_selector(action, scope, slug)].call(query, scope, slug)
+      REFINER_VALUE[refiner_value_selector(action, scope, slug)].call(refiner_query, scope, slug)
     end
 
     def refiner_value_selector action, scope, slug
@@ -30,9 +31,9 @@ module Refiner
     def refiners action, scope, slug
       merge_values = refiner_value action, scope, slug
       if merge_values.present?
-        query.merge({ scope => merge_values })
+        refiner_query.merge({ scope => merge_values })
       else
-        query.delete_if { |k, v| k == scope }
+        refiner_query.delete_if { |k, v| k == scope }
       end
     end
   end
