@@ -9,10 +9,10 @@ module Refiner
       replace: -> (query, scope, slug) { slug.to_s }
     }
 
-    def refiner_path(scope, slug, type)
+    def refiner_path(scope, slug, type, search: nil, fallback: nil)
       merged_query = refiners type, scope.to_s, slug
       filter_path = merged_query.keys.map { |key| [key, merged_query[key]] }.join('/')
-      merged_query.present? ? search_movies_path(filter_path) : movies_path
+      merged_query.present? ? self.send(search, filter_path) : self.send(fallback)
     end
 
     def refiner_active? scope, slug
@@ -20,7 +20,7 @@ module Refiner
     end
 
     def refiner_value action, scope, slug
-      refiner_VALUE[refiner_value_selector(action, scope, slug)].call(query, scope, slug)
+      REFINER_VALUE[refiner_value_selector(action, scope, slug)].call(query, scope, slug)
     end
 
     def refiner_value_selector action, scope, slug
